@@ -137,31 +137,31 @@ contract WowTQuiz is PausableUpgradeable, AccessControlUpgradeable {
     require(_userAddress != qtemp.creatorAddress, "Can't attend your own quiz");
 
     bool isCorrect = (qtemp.answer == choice);
-    if (isCorrect) {
-      community.updateCorrectQuizzes(_userAddress, _communityName, _quizName);
-      points.addPoints(_userAddress, 'answerQuiz');
+    // if (isCorrect) {
+    community.updateCorrectQuizzes(_userAddress, _communityName, _quizName);
+    points.addPoints(_userAddress, 'answerQuiz');
 
-      // Check if the user has answered all quizzes correctly
-      uint256 correctQuizzes = community
-        .getCorrectQuizzes(_userAddress, _communityName)
-        .length;
-      if (correctQuizzes == community.quizCount(_communityName)) {
-        community.updateQualifyStatus(_userAddress, _communityName, true);
-      }
-    }
+    // Check if the user has answered all quizzes correctly
+    // uint256 correctQuizzes = community
+    //   .getCorrectQuizzes(_userAddress, _communityName)
+    //   .length;
+    // if (correctQuizzes == community.quizCount(_communityName)) {
+    community.updateQualifyStatus(_userAddress, _communityName, true);
+    // }
+    // }
     // Add points to the creator only for non-entry level quizzes
     if (!isEntryLevelQuiz(_communityName, _quizName)) {
       points.addPoints(qtemp.creatorAddress, 'quizCreator');
     }
     evalStatus[_quizName][_userAddress] = true;
-    uint256 totalAttendance = community.getTotalAttendance(
-      _userAddress,
-      _communityName
-    ) + 1;
+    // uint256 totalAttendance = community.getTotalAttendance(
+    //   _userAddress,
+    //   _communityName
+    // ) + 1;
     community.updateTotalAttendance(
       _userAddress,
       _communityName,
-      totalAttendance
+      community.quizCount(_communityName)
     );
     emit Answer(isCorrect);
     emit QuizEvaluated(_communityName, 'quiz', _quizName);
